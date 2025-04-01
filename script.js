@@ -114,7 +114,7 @@ function isElementInViewport(el) {
 // 滚动处理函数
 function handleScroll() {
     const skillsSection = document.querySelector('.skills');
-    if (isElementInViewport(skillsSection)) {
+    if (isElementInViewport(s skillsSection)) {
         animateSkillBars();
     }
 }
@@ -172,9 +172,11 @@ const backToTop = document.getElementById('back-to-top');
 // 监听滚动事件
 window.addEventListener('scroll', () => {
     if (window.scrollY > 300) {
-        backToTop.style.display = 'block';
+        backToTop.style.opacity = '1';
+        backToTop.style.visibility = 'visible';
     } else {
-        backToTop.style.display = 'none';
+        backToTop.style.opacity = '0';
+        backToTop.style.visibility = 'hidden';
     }
 });
 
@@ -184,4 +186,118 @@ backToTop.addEventListener('click', () => {
         top: 0,
         behavior: 'smooth'
     });
-}); 
+});
+
+// 添加悬停效果
+backToTop.addEventListener('mouseenter', () => {
+    backToTop.style.transform = 'scale(1.1)';
+});
+
+backToTop.addEventListener('mouseleave', () => {
+    backToTop.style.transform = 'scale(1)';
+});
+
+// 页面加载进度条
+document.addEventListener('DOMContentLoaded', function() {
+    // 创建进度条元素
+    const progressBar = document.createElement('div');
+    progressBar.style.position = 'fixed';
+    progressBar.style.top = '0';
+    progressBar.style.left = '0';
+    progressBar.style.width = '0%';
+    progressBar.style.height = '3px';
+    progressBar.style.backgroundColor = 'var(--primary-color)';
+    progressBar.style.zIndex = '1001';
+    progressBar.style.transition = 'width 0.3s ease';
+    document.body.appendChild(progressBar);
+
+    // 模拟加载进度
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 5;
+        progressBar.style.width = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                progressBar.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(progressBar);
+                }, 300);
+            }, 500);
+        }
+    }, 50);
+});
+
+// 添加滚动百分比指示器
+function addScrollPercentage() {
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.id = 'scroll-percentage';
+    scrollIndicator.style.position = 'fixed';
+    scrollIndicator.style.bottom = '90px';
+    scrollIndicator.style.right = '30px';
+    scrollIndicator.style.width = '50px';
+    scrollIndicator.style.height = '50px';
+    scrollIndicator.style.backgroundColor = 'var(--primary-color)';
+    scrollIndicator.style.color = 'white';
+    scrollIndicator.style.borderRadius = '50%';
+    scrollIndicator.style.display = 'flex';
+    scrollIndicator.style.alignItems = 'center';
+    scrollIndicator.style.justifyContent = 'center';
+    scrollIndicator.style.fontWeight = 'bold';
+    scrollIndicator.style.zIndex = '998';
+    scrollIndicator.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    document.body.appendChild(scrollIndicator);
+
+    window.addEventListener('scroll', function() {
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = Math.round((scrollTop / scrollHeight) * 100);
+        scrollIndicator.textContent = scrollPercent + '%';
+    });
+}
+
+// 添加暗色模式切换按钮
+function addDarkModeToggle() {
+    const darkModeToggle = document.createElement('div');
+    darkModeToggle.id = 'dark-mode-toggle';
+    darkModeToggle.style.position = 'fixed';
+    darkModeToggle.style.bottom = '150px';
+    darkModeToggle.style.right = '30px';
+    darkModeToggle.style.width = '50px';
+    darkModeToggle.style.height = '50px';
+    darkModeToggle.style.backgroundColor = 'var(--primary-color)';
+    darkModeToggle.style.color = 'white';
+    darkModeToggle.style.borderRadius = '50%';
+    darkModeToggle.style.display = 'flex';
+    darkModeToggle.style.alignItems = 'center';
+    darkModeToggle.style.justifyContent = 'center';
+    darkModeToggle.style.cursor = 'pointer';
+    darkModeToggle.style.zIndex = '998';
+    darkModeToggle.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    document.body.appendChild(darkModeToggle);
+
+    darkModeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+
+    // 检查本地存储
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+}
+
+// 初始化所有功能
+document.addEventListener('DOMContentLoaded', function() {
+    addScrollPercentage();
+    addDarkModeToggle();
+});
